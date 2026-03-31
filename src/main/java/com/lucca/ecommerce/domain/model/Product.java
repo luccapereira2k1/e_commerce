@@ -22,13 +22,13 @@ public class Product {
     @Column(nullable = false)
     private String name;
 
-    // Preço: utilizei BigDecimal para precisão financeira (evita erro de centavos)
+    // Para o preço utilizei BigDecimal para precisão financeira (evita erro de centavos)
     @NotNull
     @PositiveOrZero // Impede que o preço seja negativo na entrada de dados
     @Column(nullable = false)
     private BigDecimal price;
 
-    // estoque mapeiei com nome técnico no banco (snake_case)
+    // Para o estoque mapeiei com nome técnico no banco (snake_case)
     @NotNull
     @PositiveOrZero
     @Column(name = "stock_quantity", nullable = false)
@@ -39,6 +39,7 @@ public class Product {
     }
 
     // --- MÉTODOS GETTERS E SETTERS (Controle Manual de Acesso) ---
+    // Apesar de poder ser feito via Lombock, eu optei por fazer manualmente para praticar
 
     public UUID getId() {
         return id;
