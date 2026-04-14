@@ -4,11 +4,15 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import com.lucca.ecommerce.Repository.ProductRepository;
 import com.lucca.ecommerce.domain.model.Product;
@@ -59,6 +63,33 @@ public class ProductController {
     @GetMapping("/{id}")
     public Optional<Product> searchId(@PathVariable UUID id){
         return repository.findById(id);
+    }
+
+    /**
+     * Remove um produto do banco de dados.
+     * @DeleteMapping indica uma operação de exclusão.
+     * @param id O identificador único (UUID) do produto a ser removido.
+     * Retorna o status 204 (No Content) após a execução bem-sucedida.
+     */
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT) // Para retornar 204, pois o método é void, não retorna nada. Sendo no padrão REST, quando não retorna nada mas foi bem sucedido devemos retornar 204 No Content.
+    public void delete(@PathVariable UUID id){
+        repository.deleteById(id);
+    }
+
+    /**
+     * Atualiza integralmente os dados de um produto existente.
+     * * @param id O ID extraído da URL para garantir a integridade da operação.
+     * @param product Os novos dados do produto recebidos no corpo da requisição.
+     * @return O produto atualizado e persistido no banco de dados.
+     * * Nota: O método save() do JPA realiza um "merge". Se o objeto contiver um ID
+     * já presente no banco, o Spring Data JPA executa um UPDATE em vez de um INSERT.
+     */
+    @PutMapping("/{id}")
+    public Product update(@PathVariable UUID id, @RequestBody Product product) {
+        product.setId(id); // Garante que o ID da URL tenha precedência sobre o ID do corpo (segurança).
+        return repository.save(product);
     }
 
 }
