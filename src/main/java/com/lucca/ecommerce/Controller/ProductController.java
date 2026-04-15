@@ -14,10 +14,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
+
+import com.lucca.ecommerce.Domain.Model.Product;
 import com.lucca.ecommerce.Repository.ProductRepository;
-import com.lucca.ecommerce.domain.model.Product;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.validation.Valid;
 
 import com.lucca.ecommerce.Repository.ProductRepository;
 
@@ -51,7 +54,7 @@ public class ProductController {
      */
     
     @PostMapping
-    public Product save(@RequestBody Product product){
+    public Product save(@Valid @RequestBody Product product){
         return repository.save(product);
     }
 
@@ -61,8 +64,9 @@ public class ProductController {
      * @return a ideia de utilizar o Optional<Product> é para caso o usuario digite um id inexistente ele não irá retornar o produto direto.
      */
     @GetMapping("/{id}")
-    public Optional<Product> searchId(@PathVariable UUID id){
-        return repository.findById(id);
+    public Product searchId(@Valid @PathVariable UUID id){
+        return repository.findById(id)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto não encontrado"));
     }
 
     /**

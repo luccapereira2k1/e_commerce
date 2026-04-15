@@ -1,7 +1,8 @@
 package com.lucca.ecommerce.Repository;
-import com.lucca.ecommerce.domain.model.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
+import com.lucca.ecommerce.Domain.Model.Product;
 
 import java.util.UUID;
 
